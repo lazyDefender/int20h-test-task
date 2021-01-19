@@ -5,7 +5,7 @@ const router = express.Router()
 const buckwheatRepository = require('../../repositories/buckwheat')
 
 router.get('/', async (req, res) => {
-    buckwheatRepository.getFromRozetka()
+    buckwheatRepository.getFromMetro()
 })
 
 module.exports = router
