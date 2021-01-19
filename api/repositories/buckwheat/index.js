@@ -4,51 +4,59 @@ const HTMLParser = require('node-html-parser')
 const repo = {
     getFromRozetka: async () => {
         const { status, data } = await axios.get('https://rozetka.com.ua/ua/krupy/c4628397/vid-225787=grechka/')
+        const foundItems = []
         if(status === 200) {
-            const foundItems = []
-
             const root = HTMLParser.parse(data)
             const body = root.childNodes[1].childNodes[2]
             const goodsTiles = body.querySelectorAll('.goods-tile')
             for(let tile of goodsTiles) {
-                // const link = 
-                const picture = tile
-                    .querySelector('.goods-tile__picture')
-                const url = picture.getAttribute('href')
-                const imgSrc = picture
-                    .querySelectorAll('img')
-                    .pop()
-                    .getAttribute('src')
-                    .trim()
-                const title = tile
-                    .querySelector('.goods-tile__title')
-                    .text
-                    .trim()
-                const price = tile
-                    .querySelector('.goods-tile__prices')
-                    .lastChild
-                    .text
-                    .trim()
                 const availability = tile
                     .querySelector('.goods-tile__availability')
                     .text
                     .trim()
 
-                foundItems.push({
-                    url, 
-                    imgSrc,
-                    title,
-                    price,
-                    availability,
-                })
+                if(availability === 'Є в наявності') {
+                    const picture = tile
+                    .querySelector('.goods-tile__picture')
+                    const url = picture.getAttribute('href')
+                    const imgSrc = picture
+                        .querySelectorAll('img')
+                        .pop()
+                        .getAttribute('src')
+                        .trim()
+                    const title = tile
+                        .querySelector('.goods-tile__title')
+                        .text
+                        .trim()
+
+                    const priceRaw = tile
+                        .querySelector('.goods-tile__prices')
+                        .lastChild
+                        .text
+                        .trim()
+                    const indexOfHrn = priceRaw.indexOf('₴')
+                    const priceWithoutHrn = priceRaw
+                        .substring(0, indexOfHrn)
+                        .trim()
+                    const priceWithoutSpace = priceWithoutHrn.replace(/\s/, '')
+                    const price = Number(priceWithoutSpace)
+
+                    foundItems.push({
+                        url, 
+                        imgSrc,
+                        title,
+                        price,
+                    })
+                }
+                
             }
-            console.log()
         }
-        console.log()
+        return foundItems
     },
     getFromMetro: async () => {
         const rootUrl = 'https://metro.zakaz.ua'
         const { status, data } = await axios.get(`${rootUrl}/uk/categories/buckwheat-metro/`)
+        const foundItems = []
         if(status === 200) {
             const root = HTMLParser.parse(data)
             const body = root.childNodes[1].childNodes[1]
@@ -59,23 +67,39 @@ const repo = {
                 const imgSrc = item
                     .querySelector('.product-tile__image-i')
                     .getAttribute('src')
-                const price = item
+
+                const priceRaw = item
                     .querySelector('.Price__value_caption')
                     .text
+                const price = Number(priceRaw)
+
                 const title = item
                     .querySelector('.product-tile__title')
                     .text
-                const weight = item
+
+                const weightRaw = item
                     .querySelector('.product-tile__weight')
                     .text
-                console.log()
+                const weightParts = weightRaw.split(' ')
+                const weight = weightParts[1] === 'г' ? 
+                    Number(weightParts[0]) :
+                    Number(weightParts[0] * 1000)
+
+                foundItems.push({
+                    url,
+                    imgSrc,
+                    price,
+                    title,
+                    weight,
+                })
             }
-            console.log()
+            return foundItems
         }
     },
     getFromNovus: async () => {
         const rootUrl = 'https://novus.zakaz.ua'
         const { status, data } = await axios.get(`${rootUrl}/uk/categories/buckwheat/`)
+        const foundItems = []
         if(status === 200) {
             const root = HTMLParser.parse(data)
             const body = root.childNodes[1].childNodes[1]
@@ -86,23 +110,39 @@ const repo = {
                 const imgSrc = item
                     .querySelector('.product-tile__image-i')
                     .getAttribute('src')
-                const price = item
+
+                const priceRaw = item
                     .querySelector('.Price__value_caption')
                     .text
+                const price = Number(priceRaw)
+
                 const title = item
                     .querySelector('.product-tile__title')
                     .text
-                const weight = item
+
+                const weightRaw = item
                     .querySelector('.product-tile__weight')
                     .text
-                console.log()
+                const weightParts = weightRaw.split(' ')
+                const weight = weightParts[1] === 'г' ? 
+                    Number(weightParts[0]) :
+                    Number(weightParts[0] * 1000)
+
+                foundItems.push({
+                    url,
+                    imgSrc,
+                    price,
+                    title,
+                    weight,
+                })
             }
-            console.log()
+            return foundItems
         }
     },
     getFromEpicentr: async () => {
         const rootUrl = 'https://epicentrk.ua'
         const { status, data } = await axios.get(`${rootUrl}/ua/shop/krupy-i-makaronnye-izdeliya/fs/vid-krupa-grechnevaya/`)
+        const foundItems = []
         if(status === 200) {
             const root = HTMLParser.parse(data)
             const body = root.childNodes[1].childNodes[3]
@@ -120,20 +160,35 @@ const repo = {
                     .text
                     .replace(/\n/g, '')
                     .trim()
-                const price = item
+
+                const priceRaw = item
                     .querySelector('.card__price')
                     .text
                     .replace(/\n/g, '')
                     .trim()
-                const weight = item
-                    .querySelector('.card__characteristics')
-                    .childNodes[5]
-                    .text
-                    .replace(/\n/g, '')
-                    .trim()
-                console.log()
+                const priceEndIndex = priceRaw.indexOf('г')
+                const price = Number(priceRaw.substring(0, priceEndIndex))
+
+                if(price > 0) {
+                    const weightRaw = item
+                        .querySelector('.card__characteristics')
+                        .childNodes[5]
+                        .text
+                        .replace(/\n/g, '')
+                        .trim()
+                    const weightParts = weightRaw.split(/\s/)
+                    const weight = Number(weightParts[1])
+
+                    foundItems.push({
+                        url,
+                        imgSrc,
+                        title,
+                        price,
+                        weight,
+                    })
+                }
             }
-            console.log()
+            return foundItems
         }
     },
 }
