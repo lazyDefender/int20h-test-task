@@ -100,7 +100,42 @@ const repo = {
             console.log()
         }
     },
-    getFromEpicentr: () => {},
+    getFromEpicentr: async () => {
+        const rootUrl = 'https://epicentrk.ua'
+        const { status, data } = await axios.get(`${rootUrl}/ua/shop/krupy-i-makaronnye-izdeliya/fs/vid-krupa-grechnevaya/`)
+        if(status === 200) {
+            const root = HTMLParser.parse(data)
+            const body = root.childNodes[1].childNodes[3]
+            const listItems = body.querySelectorAll('.card__info')
+            for(let item of listItems) {
+                const cardPhoto = item.querySelector('.card__photo')
+                const productUrl = cardPhoto.getAttribute('href')
+                const url = `${rootUrl}${productUrl}`
+                const imgSrc = cardPhoto
+                    .querySelector('img')
+                    .getAttribute('src')
+                    .trim()
+                const title = item
+                    .querySelector('.card__name')
+                    .text
+                    .replace(/\n/g, '')
+                    .trim()
+                const price = item
+                    .querySelector('.card__price')
+                    .text
+                    .replace(/\n/g, '')
+                    .trim()
+                const weight = item
+                    .querySelector('.card__characteristics')
+                    .childNodes[5]
+                    .text
+                    .replace(/\n/g, '')
+                    .trim()
+                console.log()
+            }
+            console.log()
+        }
+    },
 }
 
 module.exports = repo
