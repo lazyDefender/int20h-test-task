@@ -11,8 +11,11 @@ const repo = {
             const body = root.childNodes[1].childNodes[2]
             const goodsTiles = body.querySelectorAll('.goods-tile')
             for(let tile of goodsTiles) {
+                // const link = 
                 const picture = tile
                     .querySelector('.goods-tile__picture')
+                const url = picture.getAttribute('href')
+                const imgSrc = picture
                     .querySelectorAll('img')
                     .pop()
                     .getAttribute('src')
@@ -32,7 +35,8 @@ const repo = {
                     .trim()
 
                 foundItems.push({
-                    picture,
+                    url, 
+                    imgSrc,
                     title,
                     price,
                     availability,
