@@ -73,7 +73,33 @@ const repo = {
             console.log()
         }
     },
-    getFromNovus: () => {},
+    getFromNovus: async () => {
+        const rootUrl = 'https://novus.zakaz.ua'
+        const { status, data } = await axios.get(`${rootUrl}/uk/categories/buckwheat/`)
+        if(status === 200) {
+            const root = HTMLParser.parse(data)
+            const body = root.childNodes[1].childNodes[1]
+            const listItems = body.querySelectorAll('.products-box__list-item')
+            for(let item of listItems) {
+                const productTile = item.querySelector('a.product-tile')
+                const url = `${rootUrl}${productTile.getAttribute('href')}`
+                const imgSrc = item
+                    .querySelector('.product-tile__image-i')
+                    .getAttribute('src')
+                const price = item
+                    .querySelector('.Price__value_caption')
+                    .text
+                const title = item
+                    .querySelector('.product-tile__title')
+                    .text
+                const weight = item
+                    .querySelector('.product-tile__weight')
+                    .text
+                console.log()
+            }
+            console.log()
+        }
+    },
     getFromEpicentr: () => {},
 }
 
