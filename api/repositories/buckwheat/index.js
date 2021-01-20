@@ -1,6 +1,80 @@
 const axios = require('axios')
 const HTMLParser = require('node-html-parser')
 
+const getWeightInGrams = (weight, unit) => {
+    const result = unit === 'кг' ?
+        weight * 1000 :
+        weight
+
+    return result
+}
+
+const getRozetkaWeight = (title) => {
+    const regexes = [
+        /(\d+)\s?([а-я]+)/g,
+        /(\d+)\s([а-я]*)\s[а-я]\s(\d+)\s[а-я]+[.]?/g,
+        /(\d+)\s[а-я]+\s(\d+)\s([а-я]+)/g,
+        /(\d+,\d+)\s*([а-я]+)/g
+    ] 
+    const regexesResults = regexes
+        .map(regex => regex.exec(title))
+    const withoutNulls = regexesResults
+        .map((res, index) => ({data: res, index}))
+        .filter(res => res.data !== null)
+    let result = withoutNulls[0]
+    for(let i = 0; i < withoutNulls.length; i++) {
+        const currentStr = withoutNulls[i].data[0]
+        if(currentStr.length > result.data[0].length) {
+            result = withoutNulls[i]
+        }
+    }
+
+    const { data, index } = result
+    let res = {}
+    switch(index) {
+        
+        case 0:
+            res = {
+                weight: parseFloat(data[1]),
+                weightUnit: data[2],
+            }
+            res.weight = getWeightInGrams(res.weight, res.weightUnit)
+            res.weightUnit = 'г'
+            break
+        case 1:
+            res = {
+                weight: parseFloat(data[1]),
+                weightUnit: data[2],
+                amount: parseInt(data[3]),
+            }
+            res.weight = getWeightInGrams(res.weight, res.weightUnit)
+            res.weightUnit = 'г'
+            res.weight = res.weight * res.amount
+            break
+        case 2:
+            res = {
+                amount: parseInt(data[1]),
+                weight: parseFloat(data[2]),
+                weightUnit: data[3],
+            }
+            res.weight = getWeightInGrams(res.weight, res.weightUnit)
+            res.weightUnit = 'г'
+            res.weight = res.weight * res.amount
+            break
+        case 3:
+            res = {
+                weight: parseFloat(data[1].replace(',', '.')),
+                weightUnit: data[2]
+            }
+            res.weight = getWeightInGrams(res.weight, res.weightUnit)
+            res.weightUnit = 'г'
+            break
+        default:
+            break
+    }
+    return res.weight
+}
+
 const repo = {
     getFromRozetka: async () => {
         const { status, data } = await axios.get('https://rozetka.com.ua/ua/krupy/c4628397/vid-225787=grechka/')
@@ -37,6 +111,8 @@ const repo = {
                         .text
                         .trim()
 
+                    const weight = getRozetkaWeight(title)
+
                     // price
                     const priceRaw = tile
                         .querySelector('.goods-tile__prices')
@@ -57,6 +133,7 @@ const repo = {
                         imgSrc,
                         title,
                         price,
+                        weight,
                     })
                 }
             }
