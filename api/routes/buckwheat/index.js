@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
         minPrice,
         maxPrice,
         weights,
+        priceOrder,
     } = req.query
 
     const rozetkaItems = await buckwheatRepository.getFromRozetka()
@@ -22,7 +23,7 @@ router.get('/', async (req, res) => {
         ...novusItems,
         ...epicentrItems,
     ]
-    
+
     // filter by price
     if(minPrice && maxPrice) {
         const min = parseFloat(minPrice)
@@ -34,6 +35,17 @@ router.get('/', async (req, res) => {
     if(weights) {
         const weightsList = weights.split(',').map(w => parseInt(w))
         allItems = allItems.filter(i => weightsList.includes(i.weight))
+    }
+    switch(priceOrder) {
+        case 'asc':
+            allItems = allItems.sort((a, b) => a.price - b.price)
+            break
+        case 'desc':
+            allItems = allItems.sort((a, b) => b.price - a.price)
+            break
+        default:
+            allItems = allItems.sort((a, b) => a.price - b.price)
+            break
     }
     res.json(allItems)
 })
