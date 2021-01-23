@@ -1,22 +1,34 @@
 import React from 'react'
+import FilterForm from './components/FilterForm'
+import useBuckwheat from './hooks/useBuckwheat'
 
 const Root = () => {
+    const buckwheat = useBuckwheat()
+    const { 
+        filteredItems,
+    } = buckwheat
+
+
     return (
         <div>
-            <button>Оновити</button>
+            {/* <button>Оновити</button>
             <select>
                 <option value="">За зростанням ціни</option>
                 <option value="">За спаданням ціни</option>
             </select>
-            <div>
-                <article>
+            <button>Фільтрувати</button> */}
+            {!buckwheat.isFetching && <FilterForm/>}
+            
+            {filteredItems.map((item, i) => (<div key={item.url}>
+                <article >
                     <img src="" alt=""/>
-                    <h3>Гречка</h3>
-                    <span>24 грн</span>
-                    <span>500 г</span>
-                    <a>Переглянути на Rozetka</a>
+                    <h3>{item.title}</h3>
+                    <span>{item.price}</span>
+                    <span>{item.weight}</span>
+                    <a href={item.url}>{item.url}</a>
                 </article>
-            </div>
+            </div>))}
+            
         </div>
     )
 }
