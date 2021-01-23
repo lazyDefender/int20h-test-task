@@ -1,6 +1,6 @@
-import { api as buckwheatApi } from './buckwheat'
+import { api as buckwheat } from './buckwheat'
 const api = {
-    ...buckwheatApi,
+    buckwheat,
 }
 
 export default api
