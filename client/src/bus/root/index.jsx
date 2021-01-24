@@ -1,34 +1,35 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import Grid from '../../global/Grid'
 import FilterForm from './components/FilterForm'
+import Product from './components/Product'
 import useBuckwheat from './hooks/useBuckwheat'
+import './style.css'
 
 const Root = () => {
+    const { isFirstLoad } = useSelector(state => state.buckwheat)
     const buckwheat = useBuckwheat()
+
     const { 
         filteredItems,
+        filterValues,
+        isFetching,
     } = buckwheat
 
+    let filterForm = null
+    if(!isFetching || (isFetching && !isFirstLoad)) {
+        filterForm = <FilterForm filterValues={filterValues}/>
+    }
+
+    const filteredItemsJSX = <Grid>
+        {filteredItems.map((item) => <Product {...item} key={item.id} />)}
+    </Grid>
+    
 
     return (
-        <div>
-            {/* <button>Оновити</button>
-            <select>
-                <option value="">За зростанням ціни</option>
-                <option value="">За спаданням ціни</option>
-            </select>
-            <button>Фільтрувати</button> */}
-            {!buckwheat.isFetching && <FilterForm/>}
-            
-            {filteredItems.map((item, i) => (<div key={item.url}>
-                <article >
-                    <img src="" alt=""/>
-                    <h3>{item.title}</h3>
-                    <span>{item.price}</span>
-                    <span>{item.weight}</span>
-                    <a href={item.url}>{item.url}</a>
-                </article>
-            </div>))}
-            
+        <div className="container">
+                {filterForm}
+                {isFetching ? <h2>Loading...</h2> : filteredItemsJSX}
         </div>
     )
 }

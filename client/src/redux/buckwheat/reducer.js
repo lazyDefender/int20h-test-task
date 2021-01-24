@@ -3,7 +3,8 @@ import {types} from './types';
 const initialState = {
     items: [],
     filteredItems: [],
-    filters: {},
+    filterValues: {},
+    isFirstLoad: true,
     isFetching: false,
     error: null,
 };
@@ -37,16 +38,22 @@ export const buckwheatReducer = (state = initialState, {type, payload}) => {
             error: null,
         }
 
-        case types.BUCKWHEAT_SET_FILTERS:
+        case types.BUCKWHEAT_SET_FILTER_VALUES:
         return {
             ...state,
-            filters: payload,
+            filterValues: payload,
         }
 
         case types.BUCKWHEAT_SET_FILTERED_ITEMS:
         return {
             ...state,
             filteredItems: payload,
+        }
+
+        case types.BUCKWHEAT_SET_IS_FIRST_LOAD:
+        return {
+            ...state,
+            isFirstLoad: payload,
         }
 
         default: 

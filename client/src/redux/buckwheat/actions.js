@@ -1,5 +1,6 @@
 // Types
 import api from '../../api/'
+import { getInitialValues } from './functions/getInitialValues'
 import { types } from './types'
 
 export const buckwheatActions = Object.freeze({
@@ -31,9 +32,9 @@ export const buckwheatActions = Object.freeze({
         }
     },
 
-    setFilters: (filters) => {
+    setFilterValues: (filters) => {
         return {
-            type: types.BUCKWHEAT_SET_FILTERS,
+            type: types.BUCKWHEAT_SET_FILTER_VALUES,
             payload: filters,
         }
     },
@@ -45,13 +46,26 @@ export const buckwheatActions = Object.freeze({
         }
     },
 
+    setIsFirstLoad: (payload) => {
+        return {
+            type: types.BUCKWHEAT_SET_IS_FIRST_LOAD,
+            payload,
+        }
+    },
+
     // Async
-    fetchAsync: (id) => async (dispatch) => {
+    fetchAsync: ({filters, isFirstLoad}) => async (dispatch) => {
         dispatch(buckwheatActions.startFetching())
-        const { status, data} = await api.buckwheat.get()
+        const { status, data} = await api.buckwheat.get(filters)
         if(status === 200) {
             dispatch(buckwheatActions.fill(data))
+            
+            if(isFirstLoad) {
+                dispatch(buckwheatActions.setFilterValues(getInitialValues(data)))
+            }
+            
             dispatch(buckwheatActions.stopFetching())
+            dispatch(buckwheatActions.setIsFirstLoad(false))
         }
         
     }
