@@ -1,5 +1,6 @@
 const axios = require('axios')
 const HTMLParser = require('node-html-parser')
+const { v4: uuid } = require('uuid')
 
 const getWeightInGrams = (weight, unit) => {
     const result = unit === 'кг' ?
@@ -129,6 +130,7 @@ const repo = {
 
 
                     foundItems.push({
+                        id: uuid(),
                         url, 
                         imgSrc,
                         title,
@@ -182,6 +184,7 @@ const repo = {
                     Number(weightParts[0] * 1000)
 
                 foundItems.push({
+                    id: uuid(),
                     url,
                     imgSrc,
                     price,
@@ -234,6 +237,7 @@ const repo = {
                     Number(weightParts[0] * 1000)
 
                 foundItems.push({
+                    id: uuid(),
                     url,
                     imgSrc,
                     price,
@@ -295,6 +299,7 @@ const repo = {
                     const weight = Number(weightParts[1])
 
                     foundItems.push({
+                        id: uuid(),
                         url,
                         imgSrc,
                         title,
