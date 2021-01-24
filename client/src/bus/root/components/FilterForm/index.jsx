@@ -1,70 +1,98 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import {
     Formik,
     Form,
     Field,
 } from 'formik'
-import { getInitialValues } from './initialValues'
 import { validationSchema } from './validationSchema'
 import onFilter from './handlers/onFilter'
+import onRefresh from './handlers/onRefresh'
+import Input from '../../../../global/formElements/Input'
+import './style.css'
+import { Fragment } from 'react'
 
-const FilterForm = () => {
-    const [vals, setVals] = useState(getInitialValues())
+const FilterForm = ({filterValues}) => {
+    const vals = filterValues
     return (
+        <>
         <Formik
-        enableReinitialize
-        initialValues={vals}
+        // enableReinitialize
+        initialValues={{
+            ...vals,
+            weights: [],
+        }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-            console.log(values)
+        onSubmit={(values, formikBag) => {
+            onRefresh(values)
+        }}
+        onReset={(values, formikBag) => {
+            onFilter(values)
         }}
     >
-    {({submitForm, isSubmitting, touched, errors, values}) => (
+    {({submitForm, isSubmitting, touched, errors, values, resetForm}) => (
         
         <Form>
-                <button type="submit">Оновити</button>
-                <Field name="priceOrder" as="select">
+                <button 
+                    className="contained btn-update" 
+                    type="submit"
+                    onClick={onRefresh}
+                >Оновити</button>
+                {/* <Field name="priceOrder" as="select">
                     <option value="asc">Спочатку дешевші</option>
                     <option value="desc">Спочатку дорожчі</option>
-                </Field>
-                <Field
-                type="number"
-                name="minPrice"
-                label="minPrice"
-                disabled={false}
-                />
-                <Field
-                type="number"
-                name="maxPrice"
-                label="maxPrice"
-                disabled={false}
-                />
-                {values.weights.map(w => <label htmlFor="" key={w}>
-                    {w} г
-                    <Field type="checkbox" name="weights" value={`${w}`}/>
-                </label>)}
-                {/* <label htmlFor="">
-                    400 г
-                    <Field type="checkbox" name="weights" value="400"/>
-                </label>
-                <label htmlFor="">
-                    500 г
-                    <Field type="checkbox" name="weights" value="500"/>
-                </label>
-                <label htmlFor="">
-                    600 г
-                    <Field type="checkbox" name="weights" value="600"/>
-                </label>
-                <label htmlFor="">
-                    700 г
-                    <Field type="checkbox" name="weights" value="700"/>
-                </label> */}
+                </Field> */}
+
+                <h5>Ціна</h5>
+                <div className="price-inputs">
+                    <Field
+                        type="number"
+                        name="minPrice"
+                        label="minPrice"
+                        component={Input}
+                    />
+                    <span>—</span>
+                    <Field
+                        type="number"
+                        name="maxPrice"
+                        label="maxPrice"
+                        component={Input}
+                    />
+                </div>
+
                 
-                <button type="button">Очистити</button>
-                <button type="button" onClick={() => onFilter(values)}>Фільтрувати</button>
+                <h5>Вага</h5>
+                <ul className="weights-list">
+                    {vals.weights?.map(w => 
+                        <li className="weights-list-item" key={w}>
+                            <Field
+                                id={w} 
+                                type="checkbox" 
+                                name="weights" 
+                                value={`${w}`}
+                                component={Input}
+                            />
+                            <label htmlFor={w}>{w} г</label>
+                        </li>)
+                    }
+                </ul>
+                
+                <div className="buttons">
+                    <button 
+                        className="btn-clear" 
+                        type="button"
+                        onClick={resetForm}
+                    >Очистити</button>
+                    <button 
+                        className="contained" 
+                        type="button"
+                        onClick={() => onFilter(values)}
+                    >Фільтрувати</button>
+                </div>
         </Form>
     )}
     </Formik>
+    </>
     )
 }
 

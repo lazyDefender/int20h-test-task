@@ -1,10 +1,7 @@
 import { store } from '../../../../../init/store'
 import { buckwheatActions } from '../../../../../redux/buckwheat/actions'
 export default (filters) => {
-    store.dispatch(buckwheatActions.setFilters(filters))
     const { items } = store.getState().buckwheat
-    
-    
     const filteredItems = items.filter(item => {
         const {
             price,
@@ -19,6 +16,11 @@ export default (filters) => {
          && maxPriceCondition 
         && weightsCondition
         
+        
     })
-    store.dispatch(buckwheatActions.setFilteredItems(filteredItems))
+    const sortedItems = filters.priceOrder === 'asc' ?
+        filteredItems.sort((a, b) => a.price - b.price) :
+        filteredItems.sort((a, b) => b.price - a.price)
+
+    store.dispatch(buckwheatActions.setFilteredItems(sortedItems))
 }
