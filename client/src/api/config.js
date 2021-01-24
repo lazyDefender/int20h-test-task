@@ -1,0 +1,1 @@
+export const apiURL = `https://int20h-test-task-api.herokuapp.com/api`
