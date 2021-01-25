@@ -4,7 +4,6 @@ import { isNumberFloat } from "./isNumberFloat"
 export const formatPrice = (price) => {
     let result = `${price} грн`
     const isFloat = isNumberFloat(price)
-    
     if(isFloat) {
         const hrn = Math.floor(price)
         const decimalPart = (price - Math.floor(price)) * 100 
