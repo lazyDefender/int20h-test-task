@@ -1,6 +1,7 @@
 import React from 'react'
 import classes from './style.css'
 import { formatWeight } from '../../../../utils/formatWeight'
+import { formatPrice } from '../../../../utils/formatPrice'
 
 const Product = ({
     imgSrc,
@@ -17,7 +18,7 @@ const Product = ({
                     className="product-title"
                     title={title}
                 >{title}</h5>
-                <span className="product-price">{price} грн</span>
+                <span className="product-price">{formatPrice(price)}</span>
                 <span className="product-weight">{formatWeight(weight)}</span>
             </div>
         </a>
