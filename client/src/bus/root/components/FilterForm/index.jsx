@@ -9,8 +9,19 @@ import { validationSchema } from './validationSchema'
 import onFilter from './handlers/onFilter'
 import onRefresh from './handlers/onRefresh'
 import Input from '../../../../global/formElements/Input'
+import Select from '../../../../global/formElements/Select'
 import './style.css'
-import { Fragment } from 'react'
+
+const selectOptions = [
+    {
+        value: 'asc',
+        label: 'Спочатку дешевші',
+    },
+    {
+        value: 'desc',
+        label: 'Спочатку дорожчі',
+    },
+] 
 
 const FilterForm = ({filterValues}) => {
     const vals = filterValues
@@ -30,7 +41,7 @@ const FilterForm = ({filterValues}) => {
             onFilter(values)
         }}
     >
-    {({submitForm, isSubmitting, touched, errors, values, resetForm}) => (
+    {({submitForm, isSubmitting, touched, errors, values, resetForm, setFieldValue}) => (
         
         <Form>
                 <button 
@@ -38,10 +49,14 @@ const FilterForm = ({filterValues}) => {
                     type="submit"
                     onClick={onRefresh}
                 >Оновити</button>
-                {/* <Field name="priceOrder" as="select">
-                    <option value="asc">Спочатку дешевші</option>
-                    <option value="desc">Спочатку дорожчі</option>
-                </Field> */}
+
+                <Select
+                    onChange={value => setFieldValue('priceOrder', value.value)}
+                    value={selectOptions.find(opt => opt.value === values.priceOrder)}
+                    options={selectOptions}
+                    className="react-select-container"
+                    classNamePrefix="react-select"
+                />
 
                 <h5>Ціна</h5>
                 <div className="price-inputs">
