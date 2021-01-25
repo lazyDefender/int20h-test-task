@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import ScrollUpButton from 'react-scroll-up-button'
 import Grid from '../../global/Grid'
 import FilterForm from './components/FilterForm'
 import Product from './components/Product'
@@ -28,6 +29,12 @@ const Root = () => {
 
     return (
         <div className="container">
+                <ScrollUpButton
+                    StopPosition={0}
+                    ShowAtPosition={300}
+                    EasingType='easeOutCubic'
+                    AnimationDuration={500}
+                />
                 {filterForm}
                 {isFetching ? <h2>Loading...</h2> : filteredItemsJSX}
         </div>
