@@ -11,6 +11,7 @@ import onRefresh from './handlers/onRefresh'
 import Input from '../../../../global/formElements/Input'
 import Select from '../../../../global/formElements/Select'
 import './style.css'
+import { formatWeight } from '../../../../utils/formatWeight'
 
 const selectOptions = [
     {
@@ -25,6 +26,7 @@ const selectOptions = [
 
 const FilterForm = ({filterValues}) => {
     const vals = filterValues
+    
     return (
         <>
         <Formik
@@ -87,7 +89,7 @@ const FilterForm = ({filterValues}) => {
                                 value={`${w}`}
                                 component={Input}
                             />
-                            <label htmlFor={w}>{w} г</label>
+                            <label htmlFor={w}>{formatWeight(w)}</label>
                         </li>)
                     }
                 </ul>
