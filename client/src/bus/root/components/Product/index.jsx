@@ -1,7 +1,7 @@
 import React from 'react'
-import classes from './style.css'
 import { formatWeight } from '../../../../utils/formatWeight'
 import { formatPrice } from '../../../../utils/formatPrice'
+import './style.css'
 
 const Product = ({
     imgSrc,

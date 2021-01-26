@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
 import {
     Formik,
     Form,
@@ -12,17 +11,7 @@ import Input from '../../../../global/formElements/Input'
 import Select from '../../../../global/formElements/Select'
 import './style.css'
 import { formatWeight } from '../../../../utils/formatWeight'
-
-const selectOptions = [
-    {
-        value: 'asc',
-        label: 'Спочатку дешевші',
-    },
-    {
-        value: 'desc',
-        label: 'Спочатку дорожчі',
-    },
-] 
+import { sortingOptions } from './sortingOptions'
 
 const FilterForm = ({filterValues}) => {
     const vals = filterValues
@@ -54,8 +43,8 @@ const FilterForm = ({filterValues}) => {
 
                 <Select
                     onChange={value => setFieldValue('priceOrder', value.value)}
-                    value={selectOptions.find(opt => opt.value === values.priceOrder)}
-                    options={selectOptions}
+                    value={sortingOptions.find(opt => opt.value === values.priceOrder)}
+                    options={sortingOptions}
                     className="react-select-container"
                     classNamePrefix="react-select"
                 />

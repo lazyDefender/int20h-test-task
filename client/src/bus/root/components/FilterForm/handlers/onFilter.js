@@ -10,7 +10,9 @@ export default (filters) => {
         const weightsAsNumbers = filters.weights.map(w => parseInt(w))
         const minPriceCondition = price >= filters.minPrice
         const maxPriceCondition = price <= filters.maxPrice
-        const weightsCondition = weightsAsNumbers.length > 0 ? weightsAsNumbers.includes(weight) : true
+        const weightsCondition = weightsAsNumbers.length > 0 ? 
+            weightsAsNumbers.includes(weight) : 
+            true
         
         return minPriceCondition
          && maxPriceCondition 

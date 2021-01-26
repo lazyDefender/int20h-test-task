@@ -1,8 +1,8 @@
 import React from 'react'
 
 const Input = ({
-    field, // { name, value, onChange, onBlur }
-    form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+    field,
+    form,
     ...props
   }) => (
     <>
